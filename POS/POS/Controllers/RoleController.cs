@@ -20,7 +20,7 @@ namespace POS.Controllers
         [HttpPost]
         public IActionResult CreateRole([FromBody] Role role)
         {
-            _context.Roles.Add(role);
+            _context.role.Add(role);
             int lol = _context.SaveChanges();
             return CreatedAtAction(nameof(GetRoleById), new { roleId = role.Id }, role);
         }
@@ -29,7 +29,7 @@ namespace POS.Controllers
         [HttpGet]
         public IActionResult GetRoles()
         {
-            var roles = _context.Roles.ToList();
+            var roles = _context.role.ToList();
             return Ok(roles);
         }
 
@@ -37,7 +37,7 @@ namespace POS.Controllers
         [HttpGet("{roleId}")]
         public IActionResult GetRoleById(int roleId)
         {
-            var role = _context.Roles.Find(roleId);
+            var role = _context.role.Find(roleId);
             if (role == null)
             {
                 return NotFound();
@@ -49,7 +49,7 @@ namespace POS.Controllers
         [HttpPut("{roleId}")]
         public IActionResult UpdateRole(int roleId, [FromBody] Role updatedRole)
         {
-            var existingRole = _context.Roles.Find(roleId);
+            var existingRole = _context.role.Find(roleId);
             if (existingRole == null)
             {
                 return NotFound();
@@ -65,13 +65,13 @@ namespace POS.Controllers
         [HttpDelete("{roleId}")]
         public IActionResult DeleteRole(int roleId)
         {
-            var role = _context.Roles.Find(roleId);
+            var role = _context.role.Find(roleId);
             if (role == null)
             {
                 return NotFound();
             }
 
-            _context.Roles.Remove(role);
+            _context.role.Remove(role);
             _context.SaveChanges();
             return NoContent();
         }
