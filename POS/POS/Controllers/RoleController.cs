@@ -24,7 +24,7 @@ namespace POS.Controllers
             int lol = _context.SaveChanges();
             return CreatedAtAction(nameof(GetRoleById), new { roleId = role.Id }, role);
         }
-
+         
         // GET /api/roles - Retrieve all roles
         [HttpGet]
         public IActionResult GetRoles()
