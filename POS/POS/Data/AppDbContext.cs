@@ -12,5 +12,13 @@ namespace POS.Data
 
         public DbSet<Role> role { get; set; }
 
+        public DbSet<Item> item { get; set; }
+
+        public DbSet<Customer> customer { get; set; }
+
+        public DbSet<Discount> discount { get; set; }
+
+        public DbSet<LoyaltyPoints> loyaltyPoints { get; set; }
+
     }
 }
