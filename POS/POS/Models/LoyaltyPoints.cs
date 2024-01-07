@@ -4,13 +4,13 @@ namespace POS.Models
 {
     public class LoyaltyPoints
     {
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("Discount")]
         public int CustomerId { get; set; }
 
         public virtual Customer Customer { get; set; }
 
-        int Points { get; set; }
+        public int Points { get; set; }
     }
 }

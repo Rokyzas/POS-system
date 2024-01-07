@@ -7,7 +7,7 @@ namespace POS.Controllers
     [ApiController]
     [Route("api/customer")]
 
-    public class CustomerController: ControllerBase //wtf is controller base
+    public class CustomerController: ControllerBase 
     {
         private readonly AppDbContext _context;
 
