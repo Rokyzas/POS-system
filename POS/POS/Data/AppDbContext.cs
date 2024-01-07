@@ -11,6 +11,7 @@ namespace POS.Data
         }
 
         public DbSet<Role> role { get; set; }
+        public DbSet<Service> service { get; set; }
 
     }
 }
