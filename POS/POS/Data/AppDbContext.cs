@@ -17,5 +17,13 @@ namespace POS.Data
         public DbSet<Staff> staff { get; set; }
         public DbSet<Booking> booking { get; set; }
 
+        public DbSet<Item> item { get; set; }
+
+        public DbSet<Customer> customer { get; set; }
+
+        public DbSet<Discount> discount { get; set; }
+
+        public DbSet<LoyaltyPoints> loyaltyPoints { get; set; }
+
     }
 }
