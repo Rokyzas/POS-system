@@ -1,6 +1,7 @@
 ﻿using POS.Models;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
 
 namespace POS.Data
 {
@@ -11,6 +12,10 @@ namespace POS.Data
         }
 
         public DbSet<Role> role { get; set; }
+        public DbSet<Service> service { get; set; }
+        public DbSet<TimeSlot> timeSlot { get; set; }
+        public DbSet<Staff> staff { get; set; }
+        public DbSet<Booking> booking { get; set; }
 
     }
 }
