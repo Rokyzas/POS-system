@@ -24,6 +24,19 @@ namespace POS.Data
         public DbSet<Discount> discount { get; set; }
 
         public DbSet<LoyaltyPoints> loyaltyPoints { get; set; }
+        public DbSet<Order> order { get; set; }
+        public DbSet<OrderItem> orderItem { get; set; }
+        public DbSet<OrderBooking> orderBooking { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<OrderBooking>()
+                .HasKey(ob => new { ob.orderId, ob.bookingId });
+
+            modelBuilder.Entity<OrderItem>()
+                .HasKey(ob => new { ob.orderId, ob.itemId });
+        
+        }
 
     }
 }
