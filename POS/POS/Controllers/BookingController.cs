@@ -21,7 +21,7 @@ namespace POS.Controllers
         {
             _context.booking.Add(booking);
             _context.SaveChanges();
-            return CreatedAtAction(nameof(GetBookingById), new { id = booking.id }, booking);
+            return CreatedAtAction(nameof(GetBookingById), new { Id = booking.Id }, booking);
         }
 
         // GET /api/booking - Retrieve all bookings
