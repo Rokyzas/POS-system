@@ -108,5 +108,21 @@ namespace POS.Controllers
             _context.SaveChanges();
             return NoContent();
         }
+
+        [HttpPut("{id}/fulfill")]
+        public IActionResult FulfillBooking(int id)
+        {
+            var booking = _context.booking.Find(id);
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            // Fulfill the booking
+            booking.Status = BookingStatus.Completed;
+
+            _context.SaveChanges();
+            return NoContent();
+        }
     }
 }
