@@ -12,19 +12,19 @@ namespace POS.Models
     {
         public int Id { get; set; }
 
-        public OrderStatus status { get; set; }
+        public OrderStatus Status { get; set; }
 
-        public float price { get; set; }
+        public float Price { get; set; }
 
         [ForeignKey("Staff")]
-        public int staffID { get; set; }
+        public int StaffID { get; set; }
 
-        public virtual Staff staff { get; set; }
+        public virtual Staff Staff { get; set; }
 
         [ForeignKey("Customer")]
-        public int customerID { get; set; }
+        public int CustomerID { get; set; }
 
-        public virtual Customer customer { get; set; }
+        public virtual Customer Customer { get; set; }
 
     }
 }

@@ -21,14 +21,14 @@ namespace POS.Controllers
         [HttpPost]
         public IActionResult CreateorderItem([FromBody] OrderItem orderItem)
         {
-            var order = _context.order.Find(orderItem.orderId);
+            var order = _context.order.Find(orderItem.OrderId);
             if (order == null)
             {
                 return NotFound("order not found");
             }
 
-            orderItem.order = order;
-            var item = _context.item.Find(orderItem.itemId);
+            orderItem.Order = order;
+            var item = _context.item.Find(orderItem.ItemId);
             if (item == null)
             {
                 return NotFound("item not found");
@@ -36,7 +36,7 @@ namespace POS.Controllers
 
             _context.orderItem.Add(orderItem);
             int lol = _context.SaveChanges();
-            return CreatedAtAction(nameof(GetorderItemById), new { orderId = orderItem.orderId, itemId = orderItem.itemId }, orderItem);
+            return CreatedAtAction(nameof(GetorderItemById), new { OrderId = orderItem.OrderId, ItemId = orderItem.ItemId }, orderItem);
         }
          
         // GET /api/orderItems - Retrieve all orderItems
@@ -51,7 +51,7 @@ namespace POS.Controllers
         [HttpGet("{orderId}/{itemId}")]
         public IActionResult GetorderItemById(int orderId, int itemId)
         {
-            var orderItem = _context.orderItem.FirstOrDefault(e => e.orderId == orderId && e.itemId == itemId);
+            var orderItem = _context.orderItem.FirstOrDefault(e => e.OrderId == orderId && e.ItemId == itemId);
             if (orderItem == null)
             {
                 return NotFound();
@@ -63,13 +63,13 @@ namespace POS.Controllers
         [HttpPut("{orderId}/{itemId}")]
         public IActionResult UpdateorderItem(int orderId, int itemId, [FromBody] OrderItem updatedorderItem)
         {
-            var existingorderItem = _context.orderItem.FirstOrDefault(e => e.orderId == orderId && e.itemId == itemId);
+            var existingorderItem = _context.orderItem.FirstOrDefault(e => e.OrderId == orderId && e.ItemId == itemId);
             if (existingorderItem == null)
             {
                 return NotFound();
             }
 
-            existingorderItem.amount = updatedorderItem.amount;
+            existingorderItem.Amount = updatedorderItem.Amount;
 
             _context.SaveChanges();
             return Ok(existingorderItem);
@@ -79,7 +79,7 @@ namespace POS.Controllers
         [HttpDelete("{orderId}/{itemId}")]
         public IActionResult DeleteorderItem(int orderId, int itemId)
         {
-            var orderItem = _context.orderItem.FirstOrDefault(e => e.orderId == orderId && e.itemId == itemId);
+            var orderItem = _context.orderItem.FirstOrDefault(e => e.OrderId == orderId && e.ItemId == itemId);
             if (orderItem == null)
             {
                 return NotFound();

@@ -6,11 +6,11 @@ namespace POS.Models
 {
     public class OrderBooking
     {
-        public int orderId { get; set; }
-        public int bookingId { get; set; }
+        public int OrderId { get; set; }
+        public int BookingId { get; set; }
 
-        public virtual Order order { get; set; }
-        public virtual Booking booking { get; set; }
+        public virtual Order Order { get; set; }
+        public virtual Booking Booking { get; set; }
 
     }
 

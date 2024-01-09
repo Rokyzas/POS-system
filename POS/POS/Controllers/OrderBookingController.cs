@@ -21,23 +21,23 @@ namespace POS.Controllers
         [HttpPost]
         public IActionResult CreateorderBooking([FromBody] OrderBooking orderBooking)
         {
-            var order = _context.order.Find(orderBooking.orderId);
+            var order = _context.order.Find(orderBooking.OrderId);
             if (order == null)
             {
                 return NotFound("order not found");
             }
 
-            orderBooking.order = order;
-            var booking = _context.booking.Find(orderBooking.bookingId);
+            orderBooking.Order = order;
+            var booking = _context.booking.Find(orderBooking.BookingId);
             if (booking == null)
             {
                 return NotFound("booking not found");
             }
 
-            orderBooking.booking = booking;
+            orderBooking.Booking = booking;
             _context.orderBooking.Add(orderBooking);
             int lol = _context.SaveChanges();
-            return CreatedAtAction(nameof(GetorderBookingById), new { orderId = orderBooking.orderId, bookingId = orderBooking.bookingId }, orderBooking);
+            return CreatedAtAction(nameof(GetorderBookingById), new { OrderId = orderBooking.OrderId, BookingId = orderBooking.BookingId }, orderBooking);
         }
          
         // GET /api/orderBookings - Retrieve all orderBookings
@@ -52,7 +52,7 @@ namespace POS.Controllers
         [HttpGet("{orderId}/{bookingId}")]
         public IActionResult GetorderBookingById(int orderId, int bookingId)
         {
-            var orderBooking = _context.orderBooking.FirstOrDefault(e => e.orderId == orderId && e.bookingId == bookingId);
+            var orderBooking = _context.orderBooking.FirstOrDefault(e => e.OrderId == orderId && e.BookingId == bookingId);
             if (orderBooking == null)
             {
                 return NotFound();
@@ -64,7 +64,7 @@ namespace POS.Controllers
         [HttpDelete("{orderId}/{bookingId}")]
         public IActionResult DeleteorderBooking(int orderId, int bookingId)
         {
-            var orderBooking = _context.orderBooking.FirstOrDefault(e => e.orderId == orderId && e.bookingId == bookingId);
+            var orderBooking = _context.orderBooking.FirstOrDefault(e => e.OrderId == orderId && e.BookingId == bookingId);
             if (orderBooking == null)
             {
                 return NotFound();
