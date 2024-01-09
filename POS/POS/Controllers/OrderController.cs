@@ -22,7 +22,7 @@ namespace POS.Controllers
         {
             _context.order.Add(order);
             int lol = _context.SaveChanges();
-            return CreatedAtAction(nameof(GetorderById), new { orderId = order.Id }, order);
+            return CreatedAtAction(nameof(GetorderById), new { OrderId = order.Id }, order);
         }
          
         // GET /api/orders - Retrieve all orders
@@ -55,12 +55,12 @@ namespace POS.Controllers
                 return NotFound();
             }
 
-            existingorder.price = updatedorder.price;
-            existingorder.customerID = updatedorder.customerID;
-            existingorder.customer = updatedorder.customer;
-            existingorder.staffID = updatedorder.staffID;
-            existingorder.staff = updatedorder.staff;
-            existingorder.status = updatedorder.status;
+            existingorder.Price = updatedorder.Price;
+            existingorder.CustomerID = updatedorder.CustomerID;
+            existingorder.Customer = updatedorder.Customer;
+            existingorder.StaffID = updatedorder.StaffID;
+            existingorder.Staff = updatedorder.Staff;
+            existingorder.Status = updatedorder.Status;
 
             _context.SaveChanges();
             return Ok(existingorder);
