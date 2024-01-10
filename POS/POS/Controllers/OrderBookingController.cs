@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using POS.Data;
 using POS.Models;
@@ -35,9 +36,41 @@ namespace POS.Controllers
 
             _context.orderBooking.Add(orderBooking);
             int lol = _context.SaveChanges();
+
+            float price = CalculatePrice(orderBooking.BookingId);
+            order.Price += price;
+            _context.SaveChanges();
+
             return CreatedAtAction(nameof(GetorderBookingById), new { OrderId = orderBooking.OrderId, BookingId = orderBooking.BookingId }, orderBooking);
         }
-         
+
+        float CalculatePrice(int bookingId)
+        {
+            float currentPrice = 0;
+            var booking = _context.booking.Find(bookingId);
+            if(booking != null)
+            {
+                var service = _context.service.Find(booking.ServiceID);
+                if(service != null)
+                {
+                    float discountPercent = 1;
+
+                    if (service.DiscountID != 0)
+                    {
+                        var discount = _context.discount.Find(service.DiscountID);
+
+                        if (discount != null && discount.Percentage != 0)
+                        {
+                            discountPercent = 1 - ((float)discount.Percentage / 100);
+                        }
+                    }
+
+                    currentPrice = (float)service.Price * discountPercent;
+                }
+            }
+            return currentPrice;
+        }
+
         // GET /api/orderBookings - Retrieve all orderBookings
         [HttpGet]
         public IActionResult GetorderBookings()
@@ -68,9 +101,23 @@ namespace POS.Controllers
                 return NotFound();
             }
 
+            float price = CalculatePrice(bookingId);
+
+            RemoveFromOrder(orderId, price);
+
             _context.orderBooking.Remove(orderBooking);
             _context.SaveChanges();
             return NoContent();
+        }
+
+        void RemoveFromOrder(int orderId, float price)
+        {
+            var order = _context.order.Find(orderId);
+            if (order != null)
+            {
+                order.Price -= price;
+                _context.SaveChanges();
+            }
         }
     }
 

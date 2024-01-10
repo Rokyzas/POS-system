@@ -39,7 +39,7 @@ namespace POS.Controllers
 
 
             float price = CalculatePrice(orderItem.Amount, orderItem.ItemId);
-            orderItem.Price = price; //nustatyt kad pridėt
+            orderItem.Price = price;
             _context.Entry(orderItem).State = EntityState.Modified;
             order.Price += price;
             _context.SaveChanges();
