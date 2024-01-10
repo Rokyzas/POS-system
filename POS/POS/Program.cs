@@ -12,6 +12,7 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
+builder.Services.AddScoped<TimeSlotService>();
 
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
