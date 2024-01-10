@@ -19,7 +19,17 @@ namespace POS.Controllers
         [HttpPost]
         public IActionResult CreateBooking([FromBody] Booking booking)
         {
+            //checks if there is a TimeSlot for Booking and if it is available
+            //in case of good booking, TimeSlot status changed to unavailable
+            var timeSlot = _context.timeSlot.Find(booking.TimeSlotID);
+            if (timeSlot == null)
+                return BadRequest("No such TimeSlot!");
+            if (timeSlot.Status != TimeSlotStatus.Available)
+                return BadRequest("TimeSlot not available!");
+
             _context.booking.Add(booking);
+            timeSlot.Status = TimeSlotStatus.Unavailable;
+
             _context.SaveChanges();
             return CreatedAtAction(nameof(GetBookingById), new { id = booking.id }, booking);
         }
@@ -76,7 +86,43 @@ namespace POS.Controllers
             _context.SaveChanges();
             return NoContent();
         }
+
+
+        [HttpPut("{id}/cancel")]
+        public IActionResult CancelBooking(int id)
+        {
+            var booking = _context.booking.Find(id);
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            // Cancel the booking
+            booking.Status = BookingStatus.Cancelled;
+
+            // Make Bookings TimeSlot available
+            var timeSlot = _context.timeSlot.Find(booking.TimeSlotID);
+            if (timeSlot != null)
+                timeSlot.Status = TimeSlotStatus.Available;
+
+            _context.SaveChanges();
+            return NoContent();
+        }
+
+        [HttpPut("{id}/fulfill")]
+        public IActionResult FulfillBooking(int id)
+        {
+            var booking = _context.booking.Find(id);
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            // Fulfill the booking
+            booking.Status = BookingStatus.Completed;
+
+            _context.SaveChanges();
+            return NoContent();
+        }
     }
 }
-
-
