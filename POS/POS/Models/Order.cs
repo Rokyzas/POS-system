@@ -19,12 +19,8 @@ namespace POS.Models
         [ForeignKey("Staff")]
         public int StaffID { get; set; }
 
-        public virtual Staff Staff { get; set; }
-
         [ForeignKey("Customer")]
         public int CustomerID { get; set; }
-
-        public virtual Customer Customer { get; set; }
 
     }
 }

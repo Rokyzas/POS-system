@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using POS.Data;
 using POS.Models;
@@ -27,7 +28,6 @@ namespace POS.Controllers
                 return NotFound("order not found");
             }
 
-            orderItem.Order = order;
             var item = _context.item.Find(orderItem.ItemId);
             if (item == null)
             {
@@ -36,9 +36,34 @@ namespace POS.Controllers
 
             _context.orderItem.Add(orderItem);
             int lol = _context.SaveChanges();
-            return CreatedAtAction(nameof(GetorderItemById), new { OrderId = orderItem.OrderId, ItemId = orderItem.ItemId }, orderItem);
+
+
+            float price = CalculatePrice(orderItem.Amount, orderItem.ItemId);
+            orderItem.Price = price;
+            order.Price = price;
+            _context.SaveChanges();
+            
+
+            return CreatedAtAction(nameof(GetorderItemById), new { OrderId = orderItem.OrderId, ItemId = orderItem.ItemId , Price = orderItem.Price}, orderItem);
         }
-         
+
+        private float CalculatePrice (int amount, int itemId)
+        {
+            float currentPrice = 0;
+
+            var item = _context.item.Find(itemId);
+            var discount = _context.discount.Find(item.DiscountId);
+            float discountPercent = 1;
+            if (discount != null && discount.Percentage != 0)
+            {
+                discountPercent = 1 - (discount.Percentage / 100);
+            }
+
+            currentPrice = amount * (item.Price * discountPercent);
+
+            return currentPrice;
+        }
+
         // GET /api/orderItems - Retrieve all orderItems
         [HttpGet]
         public IActionResult GetorderItems()
@@ -67,6 +92,15 @@ namespace POS.Controllers
             if (existingorderItem == null)
             {
                 return NotFound();
+            }
+
+            float oldPrice = existingorderItem.Price;
+            float newPrice = CalculatePrice(updatedorderItem.Amount, updatedorderItem.ItemId);
+
+            var order = _context.order.Find(orderId);
+            if (order != null)
+            {
+                order.Price = order.Price - oldPrice + newPrice;
             }
 
             existingorderItem.Amount = updatedorderItem.Amount;

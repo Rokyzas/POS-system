@@ -13,8 +13,6 @@ namespace POS.Models
         [ForeignKey("Discount")]
         public int DiscountId { get; set; }
 
-        public virtual Discount Discount { get; set; }
-
         public float Tax { get; set; }
 
     }

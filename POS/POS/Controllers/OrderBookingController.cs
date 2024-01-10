@@ -27,14 +27,12 @@ namespace POS.Controllers
                 return NotFound("order not found");
             }
 
-            orderBooking.Order = order;
             var booking = _context.booking.Find(orderBooking.BookingId);
             if (booking == null)
             {
                 return NotFound("booking not found");
             }
 
-            orderBooking.Booking = booking;
             _context.orderBooking.Add(orderBooking);
             int lol = _context.SaveChanges();
             return CreatedAtAction(nameof(GetorderBookingById), new { OrderId = orderBooking.OrderId, BookingId = orderBooking.BookingId }, orderBooking);

@@ -60,7 +60,6 @@ namespace POS.Controllers
             existingItem.Name = updatedItem.Name;
             existingItem.Price = updatedItem.Price;
             existingItem.DiscountId = updatedItem.DiscountId;
-            existingItem.Discount = updatedItem.Discount;
             existingItem.Tax = updatedItem.Tax;
 
             _context.SaveChanges();

@@ -60,7 +60,6 @@ namespace POS.Controllers
 
             existingLoyalty.CustomerId = UpdatedLoyalty.CustomerId;
             existingLoyalty.Points = UpdatedLoyalty.Points;
-            existingLoyalty.Customer = UpdatedLoyalty.Customer; //not sure čia, nes foreign key
 
 
             _context.SaveChanges();

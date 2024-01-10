@@ -57,9 +57,7 @@ namespace POS.Controllers
 
             existingorder.Price = updatedorder.Price;
             existingorder.CustomerID = updatedorder.CustomerID;
-            existingorder.Customer = updatedorder.Customer;
             existingorder.StaffID = updatedorder.StaffID;
-            existingorder.Staff = updatedorder.Staff;
             existingorder.Status = updatedorder.Status;
 
             _context.SaveChanges();
