@@ -8,8 +8,8 @@
 
         public string Description { get; set; }
 
-        public DateOnly ValidFrom { get; set; }
+        public DateTime ValidFrom { get; set; }
 
-        public DateOnly ValidUntil { get; set; }
+        public DateTime ValidUntil { get; set; }
     }
 }

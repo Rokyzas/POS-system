@@ -9,8 +9,6 @@ namespace POS.Models
         [ForeignKey("Discount")]
         public int CustomerId { get; set; }
 
-        public virtual Customer Customer { get; set; }
-
         public int Points { get; set; }
     }
 }

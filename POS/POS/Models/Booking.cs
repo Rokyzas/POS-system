@@ -19,6 +19,5 @@ namespace POS.Models
         [ForeignKey("Service")]
         public int ServiceID { get; set; } // INT NOT NULL
         public BookingStatus Status { get; set; }
-
     }
 }

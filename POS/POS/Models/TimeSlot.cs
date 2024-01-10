@@ -11,7 +11,9 @@ namespace POS.Models
     public class TimeSlot
     {
         public int id { get; set; } // Corresponds to SERIAL PRIMARY KEY
+
         public DateTime StartDate { get; set; } // TIMESTAMP NOT NULL
+
         public DateTime EndDate { get; set; } // TIMESTAMP NOT NULL
 
         [ForeignKey("Staff")]

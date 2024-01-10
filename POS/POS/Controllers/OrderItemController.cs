@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using POS.Data;
 using POS.Models;
@@ -27,7 +28,6 @@ namespace POS.Controllers
                 return NotFound("order not found");
             }
 
-            orderItem.Order = order;
             var item = _context.item.Find(orderItem.ItemId);
             if (item == null)
             {
@@ -36,9 +36,42 @@ namespace POS.Controllers
 
             _context.orderItem.Add(orderItem);
             int lol = _context.SaveChanges();
-            return CreatedAtAction(nameof(GetorderItemById), new { OrderId = orderItem.OrderId, ItemId = orderItem.ItemId }, orderItem);
+
+
+            float price = CalculatePrice(orderItem.Amount, orderItem.ItemId);
+            orderItem.Price = price;
+            _context.Entry(orderItem).State = EntityState.Modified;
+            order.Price += price;
+            _context.SaveChanges();
+            
+
+            return CreatedAtAction(nameof(GetorderItemById), new { OrderId = orderItem.OrderId, ItemId = orderItem.ItemId , Price = orderItem.Price}, orderItem);
         }
-         
+
+        private float CalculatePrice(int amount, int itemId)
+        {
+            float currentPrice = 0;
+            var item = _context.item.Find(itemId);
+
+            if (item != null)
+            {
+                float discountPercent = 1;
+
+                if (item.DiscountId != 0)
+                {
+                    var discount = _context.discount.Find(item.DiscountId);
+
+                    if (discount != null && discount.Percentage != 0)
+                    {
+                        discountPercent = 1 - ((float)discount.Percentage / 100);
+                    }
+                }
+                currentPrice = amount * (item.Price * discountPercent) + item.Tax;
+            }
+            return currentPrice;
+        }
+
+
         // GET /api/orderItems - Retrieve all orderItems
         [HttpGet]
         public IActionResult GetorderItems()
@@ -69,6 +102,17 @@ namespace POS.Controllers
                 return NotFound();
             }
 
+            float oldPrice = existingorderItem.Price;
+            float newPrice = CalculatePrice(updatedorderItem.Amount, updatedorderItem.ItemId);
+
+            var order = _context.order.Find(orderId);
+            if (order != null)
+            {
+                order.Price = order.Price - oldPrice + newPrice;
+                updatedorderItem.Price = newPrice;
+            }
+
+
             existingorderItem.Amount = updatedorderItem.Amount;
 
             _context.SaveChanges();
@@ -85,10 +129,24 @@ namespace POS.Controllers
                 return NotFound();
             }
 
+            RemoveFromOrder(orderItem.OrderId, orderItem.ItemId, orderItem.Price);
+
             _context.orderItem.Remove(orderItem);
             _context.SaveChanges();
             return NoContent();
         }
+
+        void RemoveFromOrder(int orderId, int itemId, float price)
+        {
+            var order = _context.order.Find(orderId);
+            if(order != null)
+            {
+                order.Price -= price;
+            }
+            _context.SaveChanges();
+        }
+
+
     }
 
 }
