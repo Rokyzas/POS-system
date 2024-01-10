@@ -31,10 +31,10 @@ namespace POS.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<OrderBooking>()
-                .HasKey(ob => new { ob.orderId, ob.bookingId });
+                .HasKey(ob => new { ob.OrderId, ob.BookingId });
 
             modelBuilder.Entity<OrderItem>()
-                .HasKey(ob => new { ob.orderId, ob.itemId });
+                .HasKey(ob => new { ob.OrderId, ob.ItemId });
         
         }
 

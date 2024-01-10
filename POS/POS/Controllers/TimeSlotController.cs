@@ -9,19 +9,31 @@ namespace POS.Controllers
     public class TimeSlotController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly TimeSlotService _timeService;
 
-        public TimeSlotController(AppDbContext context)
+        public TimeSlotController(AppDbContext context, TimeSlotService timeService)
         {
             _context = context;
+            _timeService = timeService;
         }
 
         // POST /api/timeslot - create new timeslot
         [HttpPost]
         public IActionResult CreateTimeSlot([FromBody] TimeSlot timeSlot)
         {
-            _context.timeSlot.Add(timeSlot);
-            _context.SaveChanges();
-            return CreatedAtAction(nameof(GetTimeSlotById), new { id = timeSlot.id }, timeSlot);
+            var timeslots = _context.timeSlot;
+            var list = _timeService.FilterByStaffAndDay(timeslots, timeSlot.StartDate, timeSlot.StaffID);
+            var intervals = _timeService.FindAvailableSlots(list, timeSlot.StartDate);
+            if (_timeService.CheckIfWithinTimeInterval(timeSlot, intervals))
+            {
+                _context.timeSlot.Add(timeSlot);
+                _context.SaveChanges();
+                return CreatedAtAction(nameof(GetTimeSlotById), new { id = timeSlot.id }, timeSlot);
+            }
+            else
+            {
+                return Conflict("Time has already been booked");
+            }
         }
 
         // GET /api/timeslot - Retrieve all timeslots
@@ -42,6 +54,21 @@ namespace POS.Controllers
                 return NotFound();
             }
             return Ok(timeSlot);
+        }
+
+        // GET /api/timeSlot/{timeSlotId} - Retrieve a time available timeslots for a staff member on a given day
+        [HttpGet("GetAvailableSlotsByStaffIDandDate")]
+        public IActionResult GetAvailableTimeSlot(int staffId, DateTime time)
+        {
+            var timeslots = _context.timeSlot;
+            var list = _timeService.FilterByStaffAndDay(timeslots, time, staffId);
+            var intervals = _timeService.FindAvailableSlots(list, time);
+
+            if (intervals == null)
+            {
+                return NotFound();
+            }
+            return Ok(intervals);
         }
 
         // PUT /api/timeslot/{id} - update specific timeslot by id
