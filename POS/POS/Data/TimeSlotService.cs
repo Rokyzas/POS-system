@@ -36,6 +36,7 @@ namespace POS.Data
 
             var intervals = new List<DateTime>();
             DateTime previousEndTime = dayStart;
+            bool lastAvailability = true;
 
             foreach (var timeslot in list)
             {
@@ -46,10 +47,18 @@ namespace POS.Data
                     .ToList();
                 if (timeslot.StartDate > previousEndTime)
                 {
-                    if (booking.Count()!=0 && booking.ElementAt(0).Status != BookingStatus.Cancelled)
+                    if (lastAvailability) 
                     {
                         intervals.Add(previousEndTime);
+                    }
+                    if (timeslot.Status == TimeSlotStatus.Unavailable)
+                    {   
                         intervals.Add(timeslot.StartDate);
+                        lastAvailability = true;
+                    }
+                    else
+                    {
+                        lastAvailability = false;
                     }
                 }
                 previousEndTime = timeslot.EndDate;
@@ -58,7 +67,10 @@ namespace POS.Data
             // Handle the interval after the last timeslot until the end of the day
             if (previousEndTime < dayEnd)
             {
-                intervals.Add(previousEndTime);
+                if (lastAvailability)
+                {
+                    intervals.Add(previousEndTime);
+                }
                 intervals.Add(dayEnd);
             }
 
