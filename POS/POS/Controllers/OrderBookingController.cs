@@ -64,8 +64,15 @@ namespace POS.Controllers
                             discountPercent = 1 - ((float)discount.Percentage / 100);
                         }
                     }
+                    float tax = 1;
+                    if (service.Tax != 0)
+                    {
+                        tax = service.Tax;
+                    }
 
                     currentPrice = (float)service.Price * discountPercent;
+                    float currentTax = currentPrice * tax;
+                    currentPrice += currentTax;
                 }
             }
             return currentPrice;
