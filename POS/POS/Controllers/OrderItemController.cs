@@ -40,6 +40,7 @@ namespace POS.Controllers
 
             float price = CalculatePrice(orderItem.Amount, orderItem.ItemId);
             orderItem.Price = price;
+            _context.Entry(orderItem).State = EntityState.Modified;
             order.Price = price;
             _context.SaveChanges();
             
@@ -54,7 +55,8 @@ namespace POS.Controllers
             var item = _context.item.Find(itemId);
             var discount = _context.discount.Find(item.DiscountId);
             float discountPercent = 1;
-            if (discount != null && discount.Percentage != 0)
+
+            if (discount != null)
             {
                 discountPercent = 1 - (discount.Percentage / 100);
             }
