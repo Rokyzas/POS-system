@@ -12,5 +12,7 @@
 
         public string Description { get; set; } 
 
+        public float Tax { get; set; }
+
     }
 }
