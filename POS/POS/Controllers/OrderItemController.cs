@@ -39,32 +39,38 @@ namespace POS.Controllers
 
 
             float price = CalculatePrice(orderItem.Amount, orderItem.ItemId);
-            orderItem.Price = price;
+            orderItem.Price = price; //nustatyt kad pridėt
             _context.Entry(orderItem).State = EntityState.Modified;
-            order.Price = price;
+            order.Price += price;
             _context.SaveChanges();
             
 
             return CreatedAtAction(nameof(GetorderItemById), new { OrderId = orderItem.OrderId, ItemId = orderItem.ItemId , Price = orderItem.Price}, orderItem);
         }
 
-        private float CalculatePrice (int amount, int itemId)
+        private float CalculatePrice(int amount, int itemId)
         {
             float currentPrice = 0;
-
             var item = _context.item.Find(itemId);
-            var discount = _context.discount.Find(item.DiscountId);
-            float discountPercent = 1;
 
-            if (discount != null)
+            if (item != null)
             {
-                discountPercent = 1 - (discount.Percentage / 100);
+                float discountPercent = 1;
+
+                if (item.DiscountId != 0)
+                {
+                    var discount = _context.discount.Find(item.DiscountId);
+
+                    if (discount != null && discount.Percentage != 0)
+                    {
+                        discountPercent = 1 - ((float)discount.Percentage / 100);
+                    }
+                }
+                currentPrice = amount * (item.Price * discountPercent) + item.Tax;
             }
-
-            currentPrice = amount * (item.Price * discountPercent);
-
             return currentPrice;
         }
+
 
         // GET /api/orderItems - Retrieve all orderItems
         [HttpGet]
@@ -103,7 +109,9 @@ namespace POS.Controllers
             if (order != null)
             {
                 order.Price = order.Price - oldPrice + newPrice;
+                updatedorderItem.Price = newPrice;
             }
+
 
             existingorderItem.Amount = updatedorderItem.Amount;
 
@@ -121,10 +129,24 @@ namespace POS.Controllers
                 return NotFound();
             }
 
+            RemoveFromOrder(orderItem.OrderId, orderItem.ItemId, orderItem.Price);
+
             _context.orderItem.Remove(orderItem);
             _context.SaveChanges();
             return NoContent();
         }
+
+        void RemoveFromOrder(int orderId, int itemId, float price)
+        {
+            var order = _context.order.Find(orderId);
+            if(order != null)
+            {
+                order.Price -= price;
+            }
+            _context.SaveChanges();
+        }
+
+
     }
 
 }
