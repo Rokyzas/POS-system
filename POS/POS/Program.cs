@@ -14,6 +14,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<TimeSlotService>();
+builder.Services.AddScoped<PaymentService>();
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
