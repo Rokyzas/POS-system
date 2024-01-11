@@ -131,6 +131,12 @@ namespace POS.Controllers
                 tipAmount = tip.Amount;
             }
 
+            // Retrieve payment transaction details
+            var paymentTransaction = _context.paymentTransaction
+                .Where(pt => pt.OrderId == order.Id)
+                .OrderByDescending(pt => pt.Timestamp)
+                .FirstOrDefault();
+
             // Create a detailed receipt
             var receipt = new
             {
@@ -139,7 +145,10 @@ namespace POS.Controllers
                 Items = itemDetails,
                 Services = bookingDetails,
                 TipAmount = tipAmount,
-                Total = orderTotal + tipAmount
+                Total = orderTotal + tipAmount,
+                PaidAmount = paymentTransaction?.AmountPaid ?? 0,
+                Change = paymentTransaction?.Change ?? 0,
+                PaidTimestamp = paymentTransaction?.Timestamp
             };
 
             // Return the detailed receipt

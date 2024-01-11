@@ -29,6 +29,8 @@ namespace POS.Data
         public DbSet<OrderBooking> orderBooking { get; set; }
         public DbSet<Tip> tip { get; set; }
         public DbSet<Transaction> transactions { get; set; }
+        public DbSet<PaymentTransaction> paymentTransaction { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
