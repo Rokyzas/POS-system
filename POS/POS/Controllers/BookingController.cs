@@ -88,41 +88,49 @@ namespace POS.Controllers
         }
 
 
-        [HttpPut("{id}/cancel")]
+        // POST /api/booking/{id}/cancel - Cancel a specific booking
+        [HttpPost("{id}/cancel")]
         public IActionResult CancelBooking(int id)
         {
             var booking = _context.booking.Find(id);
             if (booking == null)
             {
-                return NotFound();
+                return NotFound("Booking not found for cancellation.");
             }
 
-            // Cancel the booking
-            booking.Status = BookingStatus.Cancelled;
+            if (booking.Status == BookingStatus.Cancelled)
+            {
+                return BadRequest("Booking is already cancelled.");
+            }
 
-            // Make Bookings TimeSlot available
+            booking.Status = BookingStatus.Cancelled;
             var timeSlot = _context.timeSlot.Find(booking.TimeSlotID);
             if (timeSlot != null)
                 timeSlot.Status = TimeSlotStatus.Available;
 
             _context.SaveChanges();
-            return NoContent();
+            return Ok(new { message = "Booking canceled successfully.", updatedBooking = booking });
         }
 
-        [HttpPut("{id}/fulfill")]
+        // POST /api/booking/{id}/fulfill - Fulfill a specific booking
+        [HttpPost("{id}/fulfill")]
         public IActionResult FulfillBooking(int id)
         {
             var booking = _context.booking.Find(id);
             if (booking == null)
             {
-                return NotFound();
+                return NotFound("Booking not found for fulfillment.");
             }
 
-            // Fulfill the booking
+            if (booking.Status == BookingStatus.Completed)
+            {
+                return BadRequest("Booking is already fulfilled.");
+            }
+
             booking.Status = BookingStatus.Completed;
 
             _context.SaveChanges();
-            return NoContent();
+            return Ok(new { message = "Booking fulfilled successfully.", updatedBooking = booking });
         }
     }
 }

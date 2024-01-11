@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using POS.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<TimeSlotService>();
 
 builder.Services.AddCors(options =>
 {
