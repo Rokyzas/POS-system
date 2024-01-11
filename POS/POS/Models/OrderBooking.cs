@@ -8,6 +8,7 @@ namespace POS.Models
     {
         public int OrderId { get; set; }
 
+        [ForeignKey("Service")]
         public int BookingId { get; set; }
 
     }
